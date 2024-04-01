@@ -26,7 +26,7 @@ data "aws_vpc" "selected" {
 data "aws_subnet" "public" {
   filter {
     name   = "tag:Name"
-    values = ["public-subnet-1", "public-subnet-2"]
+    values = ["public-subnet-1"]
   }
 }
 

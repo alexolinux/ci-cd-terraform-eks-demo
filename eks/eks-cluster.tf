@@ -13,7 +13,7 @@ data "aws_vpc" "selected" {
   }
 }
 
-data "aws_subnet" "private" {
+data "aws_subnets" "selected" {
   filter {
     name   = "tag:Name"
     values = ["private-subnet-1", "private-subnet-2"]
@@ -29,7 +29,7 @@ module "eks" {
   cluster_endpoint_public_access = var.cluster_endpoint_public_access
 
   vpc_id     = data.aws_vpc.selected.id
-  subnet_ids = data.aws_subnet.private.id
+  subnet_ids = data.aws_subnets.selected.ids
 
   tags = merge(
     var.tags,
