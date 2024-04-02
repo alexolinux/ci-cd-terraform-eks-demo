@@ -1,9 +1,8 @@
-
 #-- locals
 locals {
-  project  = "testing"
-  vpc_name = "vpc-test"
-  name     = "ec2-test"
+  project         = "testing"
+  vpc_name        = "vpc-test"
+  name            = "ec2-test"
   azs             = slice(data.aws_availability_zones.available.names, 0, 2)
   cidr_blocks_ssh = ["0.0.0.0/0"]
 
@@ -136,6 +135,10 @@ resource "aws_security_group_rule" "http" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2.id
+
+  depends_on = [
+    aws_instance.this
+  ]
 }
 
 resource "aws_key_pair" "this" {
@@ -152,6 +155,14 @@ resource "aws_instance" "this" {
 
   subnet_id              = data.aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.ec2.id]
+
+  # Define block device mapping to increase disk size
+  root_block_device {
+    volume_size           = 20
+    volume_type           = var.volume_type
+    delete_on_termination = var.delete_on_termination
+    encrypted             = var.encrypted
+  }
 
   # Provisioner connection
   connection {

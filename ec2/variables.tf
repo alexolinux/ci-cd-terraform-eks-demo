@@ -11,9 +11,34 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-#Extra Vars: group_name/user_name/private_key
-#might be defined using .tfvars or by using overrride.tf
-#overrride.tf is included in .gitignore for sensitive data
+variable "volume_size" {
+  description = ""
+  type        = number
+  default     = 8
+}
+
+#https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html
+variable "volume_type" {
+  description = "EBS Volume types"
+  type        = string
+  default     = "gp3"
+}
+
+variable "delete_on_termination" {
+  description = "Delete EBS Volume when ec2 is terminated"
+  type        = bool
+  default     = true
+}
+
+variable "encrypted" {
+  description = "EBS block encryption"
+  type        = bool
+  default     = true
+}
+
+#Variables group_name, user_name, private_key
+#are recommended to be defined in override.tf
+#override.tf is included in .gitignore for "sensitive data"
 variable "group_name" {
   description = "Linux Group"
   type        = string
