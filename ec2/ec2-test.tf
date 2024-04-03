@@ -14,7 +14,7 @@ locals {
   }
 }
 
-#-- data
+#-- data-sources
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
@@ -73,7 +73,8 @@ resource "aws_iam_role" "iam_instance_core" {
 
 resource "aws_iam_role_policy_attachment" "iam_attachment" {
   role       = aws_iam_role.iam_instance_core.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  policy_arn = data.aws_iam_policy.selected.arn
+  #"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 # Required for ec2 resource
@@ -82,7 +83,7 @@ resource "aws_iam_instance_profile" "instance_profile" {
   role = aws_iam_role.iam_instance_core.name
 }
 
-#-- resource
+#-- resources
 
 # security-group SSH
 resource "aws_security_group" "ec2" {
@@ -94,6 +95,14 @@ resource "aws_security_group" "ec2" {
     description = "SSH Access for devops sysadmins"
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = local.cidr_blocks_ssh
+  }
+
+  ingress {
+    description = "Access for Jenkins on 8080"
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = local.cidr_blocks_ssh
   }
@@ -124,21 +133,6 @@ resource "aws_security_group" "ec2" {
     data.aws_vpc.selected
   ]
 
-}
-
-# Additional SG Rule for Jenkins Access
-resource "aws_security_group_rule" "http" {
-  type              = "ingress"
-  description       = "Access for Jenkins on 8080"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.ec2.id
-
-  depends_on = [
-    aws_instance.this
-  ]
 }
 
 resource "aws_key_pair" "this" {

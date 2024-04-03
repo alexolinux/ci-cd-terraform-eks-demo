@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Required Variables (Change these values according to your confs)
-USERNAME="sysadmin"
-GROUPNAME="devops"
-PUBLIC_KEY="ssh-ed25519 HASHCODEXXX....."
+# Required Variables (Add these values according to your confs)
+USERNAME=""
+GROUPNAME=""
+PUBLIC_KEY=""
 
 # Shell Script Functions
 command_exists() {

@@ -46,10 +46,31 @@ resource "aws_subnet" "public" {
   tags = merge(
     var.tags,
     {
-      Name = "public-subnet-${count.index + 1}"
+      Name = "public-subnet-${count.index + 1}",
+      Tier = "public"
     }
   )
+}
 
+# Cleaning default SG rules
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.this.id
+
+  #inbound traffic
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  #outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_subnet" "private" {
@@ -62,7 +83,8 @@ resource "aws_subnet" "private" {
   tags = merge(
     var.tags,
     {
-      Name = "private-subnet-${count.index + 1}"
+      Name = "private-subnet-${count.index + 1}",
+      Tier = "private"
     }
   )
 }
@@ -77,7 +99,8 @@ resource "aws_subnet" "database" {
   tags = merge(
     var.tags,
     {
-      Name = "database-subnet-${count.index + 1}"
+      Name = "database-subnet-${count.index + 1}",
+      Tier = "private-db"
     }
   )
 }
@@ -162,6 +185,7 @@ resource "aws_route_table" "private" {
       Name = "private-rt-${local.name}"
     }
   )
+
 }
 
 resource "aws_route_table_association" "private" {
