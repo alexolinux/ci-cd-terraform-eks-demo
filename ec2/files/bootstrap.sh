@@ -5,12 +5,14 @@ USERNAME="sysadmin"
 GROUPNAME="devops"
 PUBLIC_KEY="ssh-ed25519 HASHCODEXXX....."
 
-# Shell Script Functions -------------------------------------------------------------------
+# Shell Script Functions
 command_exists() {
 	command -v "$1" >/dev/null 2>&1
 }
 
-# Shell Script Code
+#-- -----------------------------------------------------------------------------------
+#-- Shell Script Code -----------------------------------------------------------------
+#-- -----------------------------------------------------------------------------------
 
 # Create GROUPNAME/USERNAME
 sudo groupadd "${GROUPNAME}"
@@ -34,28 +36,30 @@ for package in "${packages[@]}"; do
 	fi
 done
 
+# install java
 if ! command_exists java || [[ "$(java -version 2>&1 | grep 'java version')" == "" ]]; then
 	sudo yum install -y java java-devel
 fi
+
+# install kubectl
+curl -fsSL -o /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.29.0/bin/linux/amd64/kubectl
+chmod +x /tmp/kubectl
+mkdir -p /home/"${USERNAME}"/bin && mv /tmp/kubectl /home/"${USERNAME}"/bin/kubectl && export PATH="${PATH}":/home/"${USERNAME}"/bin
+
+# install helm
+curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod +x /tmp/get_helm.sh
+sh /tmp/get_helm.sh
 
 # install terraform
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 sudo yum -y install terraform
 
-# install kubectl
-sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.29.0/bin/linux/amd64/kubectl
-sudo chmod +x ./kubectl
-sudo mkdir -p /home/"${USERNAME}"/bin && sudo cp ./kubectl /home/"${USERNAME}"/bin/kubectl && export PATH="${PATH}":/home/"${USERNAME}"/bin
+# install docker
+sudo yum -y install docker
 
-# install jenkins on AmazonLinux2
-if [[ ! -f "/etc/yum.repos.d/jenkins.repo" ]]; then
-	sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-	sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+if [ "$?" -eq 0 ]; then
+	sudo usermod -aG docker "${USERNAME}"
+	sudo systemctl enable docker
+	sudo systemctl start docker
 fi
-
-# Update && install jenkins
-sudo yum upgrade -y
-sudo yum install jenkins -y
-
-# Jenkins Daemon
-sudo systemctl enable jenkins && sudo systemctl start jenkins
