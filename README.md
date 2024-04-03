@@ -19,6 +19,17 @@ This repository results from a lab for EKS provisioning using Jenkins CI/CD.
   
   - Allowed Ports 22 and 8080 (Security Group)
 
+ 
+  > After provisioned the EC2 Instance, run the following docker commands:
+
+  ```shell
+  docker volume create jenkins
+  ```
+  
+  ```shell
+  docker run --name jenkins-devops -d -p 8080:8080 -p 50000:50000 -v jenkins:/var/jenkins_home alexmbarbosa/jenkins-devops:latest
+  ```
+
 - **eks**
 
   Provision eks cluster using terraform eks module.
