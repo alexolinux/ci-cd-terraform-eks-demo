@@ -6,6 +6,11 @@ terraform {
     }
   }
 
+  backend "s3" {
+    bucket = "ci-cd-terraform-eks-demo-2024"
+    key    = "eks.tfstate"
+    region = "us-east-1"
+  }
 }
 
 provider "aws" {
