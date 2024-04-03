@@ -38,21 +38,24 @@ variable "encrypted" {
 
 #Variables group_name, user_name, private_key
 #are recommended to be defined in override.tf
-#override.tf is included in .gitignore for "sensitive data"
+#override.tf is included in .gitignore for "sensitive data" protection
 variable "group_name" {
   description = "Linux Group"
   type        = string
+  default     = null
 }
 
 variable "user_name" {
   description = "Linux User"
   type        = string
+  default     = null
 }
 
 variable "private_key" {
   description = "Path to the private SSH key file"
   type        = string
   sensitive   = true
+  default     = null
 }
 
 #-- Tag Vars

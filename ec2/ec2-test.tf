@@ -149,7 +149,7 @@ resource "aws_key_pair" "this" {
 # ec2 instance resource
 resource "aws_instance" "this" {
   ami                  = data.aws_ami.amazon_linux_2.id
-  instance_type        = var.instance_type
+  instance_type        = "t3.medium"
   key_name             = aws_key_pair.this.id
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
