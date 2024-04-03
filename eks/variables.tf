@@ -7,7 +7,7 @@ variable "cluster_endpoint_public_access" {
 variable "instance_types" {
   description = "EKS Instance Types"
   type        = list(string)
-  default     = ["t2.micro"]
+  default     = ["t2.micro", "t2.medium", "t3.micro", "t3.medium"]
 }
 
 #-- Tag Vars
