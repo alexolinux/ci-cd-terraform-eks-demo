@@ -1,9 +1,9 @@
 # ci-cd-terraform-eks-demo
 
-Deploy to EKS using terraform and Jenkins
+Deploy to EKS using Terraform and Jenkins
 
 ---
-This repository is a result of lab for EKS provisioning using Jenkins CI/CD.
+This repository results from a lab for EKS provisioning using Jenkins CI/CD.
 
 - **vpc**
 
