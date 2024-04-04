@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "ci-cd-terraform-eks-demo-2024"
+    bucket = "x-aws-ci-cd-terraform-eks-demo-2024"
     key    = "ec2.tfstate"
     region = "us-east-1"
   }
