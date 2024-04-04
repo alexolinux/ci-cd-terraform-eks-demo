@@ -4,18 +4,21 @@ locals {
   project = "testing"
   name    = "vpc-test"
 
-  availability_zones = ["us-east-1b", "us-east-1c"]
+  public_subnet_count   = var.public_subnet_count
+  private_subnet_count  = var.private_subnet_count
+  database_subnet_count = var.database_subnet_count
+  availability_zones    = ["us-east-1a", "us-east-1b", "us-east-1c"]
 
   public_subnet_cidrs = [
-    for i in range(var.public_subnet_count) : "10.0.${i * 16}.0/24"
+    for i in range(var.public_subnet_count) : "10.0.${i * 16 + 1}.0/24"
   ]
 
   private_subnet_cidrs = [
-    for i in range(var.private_subnet_count) : "10.0.${(i + var.public_subnet_count) * 16}.0/24"
+    for i in range(var.private_subnet_count) : "10.0.${(i + var.public_subnet_count) * 16 + 1}.0/24"
   ]
 
   database_subnet_cidrs = [
-    for i in range(var.database_subnet_count) : "10.0.${(i + var.public_subnet_count + var.private_subnet_count) * 16}.0/24"
+    for i in range(var.database_subnet_count) : "10.0.${(i + var.public_subnet_count + var.private_subnet_count) * 16 + 1}.0/24"
   ]
 }
 
@@ -52,7 +55,7 @@ resource "aws_subnet" "public" {
   )
 }
 
-# Cleaning default SG rules
+# Remove "ALL Traffic" for defaul VPC SG
 resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.this.id
 
@@ -61,7 +64,7 @@ resource "aws_default_security_group" "default" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   #outbound traffic
@@ -69,7 +72,7 @@ resource "aws_default_security_group" "default" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.vpc_cidr]
   }
 }
 
