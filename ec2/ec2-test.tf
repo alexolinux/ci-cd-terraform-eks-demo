@@ -151,11 +151,14 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = [aws_security_group.ec2.id]
 
   # Define block device mapping to increase disk size
+  ebs_optimized = var.ebs_optimized
+  monitoring    = var.monitoring
   root_block_device {
     volume_size           = 20
     volume_type           = var.volume_type
     delete_on_termination = var.delete_on_termination
     encrypted             = var.encrypted
+    tags_all              = var.tags
   }
 
   # Provisioner connection

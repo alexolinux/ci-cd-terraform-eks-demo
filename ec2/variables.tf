@@ -30,6 +30,18 @@ variable "delete_on_termination" {
   default     = true
 }
 
+variable "monitoring" {
+  description = "EC2 monitoring"
+  type        = bool
+  default     = false
+}
+
+variable "ebs_optimized" {
+  description = "EBS volume optimization"
+  type        = bool
+  default     = true
+}
+
 variable "encrypted" {
   description = "EBS block encryption"
   type        = bool
