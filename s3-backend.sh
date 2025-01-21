@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Replace these variables with your own values
-BUCKET_NAME="x-aws-ci-cd-terraform-eks-demo-2024"
+BUCKET_NAME="x-aws-ci-cd-terraform-eks-demo-2099"
 REGION="us-east-1"
 
 # Check if AWS_PROFILE environment variable is set
